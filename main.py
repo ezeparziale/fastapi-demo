@@ -11,15 +11,18 @@ class Post(BaseModel):
     published: bool = True
     rating: Optional[int] = None
 
+my_posts = [{"title": "AAA", "content": "aaa", "id": 1}, 
+            {"title": "BBB", "content": "bbb", "id": 2}]
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 @app.get("/posts")
 def get_posts():
-    return {"data": "This is your posts"}
+    return {"data": my_posts}
 
-@app.post("/create_posts")
+@app.post("/posts")
 def create_posts(post: Post):
     print(post)
     print(post.dict())
