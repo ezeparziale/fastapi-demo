@@ -35,6 +35,11 @@ def create_posts(post: Post):
     my_posts.append(post_dict)
     return {"data": post_dict}
 
+@app.get("/posts/latest")
+def get_latest_post():
+    post = my_posts[len(my_posts)-1]
+    return post
+
 
 @app.get("/posts/{id}")
 def get_post(id: int):
