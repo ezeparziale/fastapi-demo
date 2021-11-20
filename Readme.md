@@ -1,5 +1,11 @@
 # Demo Fast API
 
+## Run
+
+```bash
+uvicorn app.main:app --reload
+```
+
 ## CRUD
 
 ### Create
