@@ -29,3 +29,15 @@
 ```python
 @app.delete("/posts/{id}")
 ```
+
+## HTTP Methods
+
+```http
+https://developer.mozilla.org/es/docs/Web/HTTP/Methods
+```
+
+## HTTP Status code
+
+```http
+https://developer.mozilla.org/es/docs/Web/HTTP/Status
+```
