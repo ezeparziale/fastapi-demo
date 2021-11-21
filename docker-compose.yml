@@ -3,7 +3,7 @@ services:
 
   postgresql:
     image: postgres:9.6.23
-    container_name: postgresql-server
+    container_name: postgresql
     restart: always
     ports:
       - 5432:5432
@@ -19,6 +19,7 @@ services:
 
   adminer:
     image: adminer:4.8.1
+    container_name: adminer
     restart: always
     ports:
       - 8080:8080
