@@ -57,3 +57,21 @@ http://127.0.0.1:8000/docs
 ```http
 http://127.0.0.1:8000/redoc
 ```
+
+## SQLAlchemy
+
+```http
+https://docs.sqlalchemy.org/en/14/
+```
+
+## FastAPI
+
+```http
+https://fastapi.tiangolo.com
+```
+
+## psycopg
+
+```http
+https://www.psycopg.org
+```
