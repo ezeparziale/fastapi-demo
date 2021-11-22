@@ -75,3 +75,9 @@ https://fastapi.tiangolo.com
 ```http
 https://www.psycopg.org
 ```
+
+## JWT
+
+```http
+https://jwt.io
+```
