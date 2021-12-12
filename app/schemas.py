@@ -12,12 +12,10 @@ class PostBase(BaseModel):
 class PostCreate(PostBase):
     pass
 
-class Post(BaseModel):
+class Post(PostBase):
     id: int
-    title: str
-    content: str
-    published: str
     created_at: datetime
+    owner_id: int
 
     class Config:
         orm_mode = True
