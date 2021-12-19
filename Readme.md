@@ -81,3 +81,24 @@ https://www.psycopg.org
 ```http
 https://jwt.io
 ```
+
+## Alembic
+
+```http
+https://alembic.sqlalchemy.org/en/latest/
+```
+
+```bash
+alembic init alembic
+```
+
+```bash
+alembic revision -m "add column to table xxx"
+alembic current
+alembic heads
+alembic upgrade REVISION_ID
+alembic downgrade REVISION_ID
+alembic downgrade -1
+alembic history
+alembic upgrade head
+```
