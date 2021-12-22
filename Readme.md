@@ -102,3 +102,24 @@ alembic downgrade -1
 alembic history
 alembic upgrade head
 ```
+
+## PyTest
+
+```bash
+pip install pytest
+```
+
+```http
+https://fastapi.tiangolo.com/tutorial/testing/
+```
+
+Comandos más utilizados:
+
+```bash
+pytest
+pytest -v -s
+pytest --disable-warnings
+pytest --disable-warnings -v
+pytest --disable-warnings -v -s
+pytest --disable-warnings -v -s -x
+```
