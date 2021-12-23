@@ -1,10 +1,7 @@
-from fastapi.testclient import TestClient
-from app.main import app
 from app import schemas
+from .database import client, session
 
-client = TestClient(app)
-
-def test_create_user():
+def test_create_user(client, session):
     res = client.post(
         "/users/", json={"email": "abc1@test.com", "password": "abc123"}
     )
