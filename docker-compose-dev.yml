@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+
+  api:
+    build: .
+    hostname: my_api
+    container_name: my_api
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+        - ./.env
+    depends_on:
+      - postgres
+    networks:
+      - fastapi_demo_net
+
+  postgres:
+    image: postgres
+    hostname: postgres_db
+    container_name: postgres_db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - ./mnt/postgres:/var/lib/postgresql/data
+    networks:
+      - fastapi_demo_net
+
+  adminer:
+    image: adminer:4.8.1
+    hostname: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - fastapi_demo_net
+
+volumes:
+  postgres-db:
+
+networks:
+  fastapi_demo_net:
+    name: fastapi_demo_net
