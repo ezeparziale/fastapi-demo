@@ -1,0 +1,11 @@
+env/
+.github
+.pytest_cache
+_
+.gitignore
+Procfile
+docker-compose-dev.yml
+mnt/
+__pycache__
+README.md
+Dockerfile
