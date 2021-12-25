@@ -18,7 +18,7 @@ services:
       - fastapi_demo_net
 
   postgres:
-    image: postgres
+    image: postgres:14.1
     hostname: postgres_db
     container_name: postgres_db
     restart: always
@@ -29,7 +29,7 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     volumes:
-      - ./mnt/postgres:/var/lib/postgresql/data
+      - postgres-db-dev:/var/lib/postgresql/data
     networks:
       - fastapi_demo_net
 
@@ -44,7 +44,7 @@ services:
       - fastapi_demo_net
 
 volumes:
-  postgres-db:
+  postgres-db-dev:
 
 networks:
   fastapi_demo_net:
