@@ -2,7 +2,6 @@ from typing import List, Optional
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-
 from app import oauth2
 from .. import models, schemas, utils
 from ..database import engine, get_db
@@ -36,11 +35,10 @@ def get_post(id: int, db: Session = Depends(get_db), current_user: int = Depends
         .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True) \
             .group_by(models.Post.id) \
                 .filter(models.Post.id == id).first()
-                
+                         
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post with id {id} not found")
-
     return post
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
