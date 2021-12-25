@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+
+  api:
+    image: ezeparziale/fastpi-demo:lastest
+    hostname: my_api
+    container_name: my_api
+    ports:
+      - 80:8000
+    environment:
+      - DATABASE_HOSTNAME=${DATABASE_HOSTNAME}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+    depends_on:
+      - postgres
+    networks:
+      - fastapi_demo_net
+
+  postgres:
+    image: postgres:14.1
+    hostname: postgres_db
+    container_name: postgres_db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - fastapi_demo_net
+
+  adminer:
+    image: adminer:4.8.1
+    hostname: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - fastapi_demo_net
+
+volumes:
+  postgres-db:
+
+networks:
+  fastapi_demo_net:
+    name: fastapi_demo_net
