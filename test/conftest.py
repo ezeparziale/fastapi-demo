@@ -20,6 +20,7 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 client = TestClient(app)
 
+
 @pytest.fixture()
 def session():
     Base.metadata.drop_all(bind=engine)
@@ -30,6 +31,7 @@ def session():
     finally:
         db.close()
 
+
 @pytest.fixture()
 def client(session):
     def override_get_db():
@@ -37,6 +39,7 @@ def client(session):
             yield session
         finally:
             session.close()
+
     app.dependency_overrides[get_db] = override_get_db
 
     yield TestClient(app)
@@ -44,56 +47,44 @@ def client(session):
 
 @pytest.fixture
 def test_user(client):
-    user_data = {"email": "abc1@test.com",
-                 "password": "abc123"}
+    user_data = {"email": "abc1@test.com", "password": "abc123"}
     res = client.post("/users/", json=user_data)
     assert res.status_code == 201
     print(res.json())
     new_user = res.json()
-    new_user['password'] = user_data['password']
+    new_user["password"] = user_data["password"]
     return new_user
+
 
 @pytest.fixture
 def test_user2(client):
-    user_data = {"email": "abc2@test.com",
-                 "password": "abc123"}
+    user_data = {"email": "abc2@test.com", "password": "abc123"}
     res = client.post("/users/", json=user_data)
     assert res.status_code == 201
     print(res.json())
     new_user = res.json()
-    new_user['password'] = user_data['password']
+    new_user["password"] = user_data["password"]
     return new_user
+
 
 @pytest.fixture
 def token(test_user):
-    return create_access_token({"user_id": test_user['id']})
+    return create_access_token({"user_id": test_user["id"]})
+
 
 @pytest.fixture
 def authorized_client(client, token):
-    client.headers = {
-        **client.headers,
-        "Authorization": f"Bearer {token}"
-    }
+    client.headers = {**client.headers, "Authorization": f"Bearer {token}"}
     return client
 
 
 @pytest.fixture
 def test_posts(test_user, test_user2, session):
-    posts_data = [{
-        "title":"Title_1",
-        "content":"Content_1",
-        "owner_id": test_user['id']
-    },
-    {
-        "title":"Title_2",
-        "content":"Content_2",
-        "owner_id": test_user['id']
-    },
-    {
-        "title":"Title_2",
-        "content":"Content_2",
-        "owner_id": test_user2['id']
-    }]
+    posts_data = [
+        {"title": "Title_1", "content": "Content_1", "owner_id": test_user["id"]},
+        {"title": "Title_2", "content": "Content_2", "owner_id": test_user["id"]},
+        {"title": "Title_2", "content": "Content_2", "owner_id": test_user2["id"]},
+    ]
 
     def create_user_model(post):
         return models.Post(**post)
