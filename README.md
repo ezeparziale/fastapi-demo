@@ -1,17 +1,17 @@
-# Demo Fast API
+# :circus_tent: Demo Fast API
 
 API con varios endpoints utilizando FastAPI.  
 Sirve de template para nuevas apis.
 
-## Run
+## :runner: Run
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-## CRUD
+## :star: CRUD
 
-### Create
+### :rocket: Create
 
 #### Creación de un post
 
@@ -72,7 +72,7 @@ Body:
 }
 ```
 
-### Read
+### :eyeglasses: Read
 
 #### Lectura de un post
 
@@ -92,7 +92,7 @@ Body:
 @app.get("/users/{id}")  # id = user id
 ```
 
-### Update
+### :coffee: Update
 
 #### Actualización de un post
 
@@ -100,7 +100,7 @@ Body:
 @app.put("/posts/{id}")  # id = post id
 ```
 
-### Delete
+### :fire: Delete
 
 #### Borrado de un post
 
@@ -108,19 +108,19 @@ Body:
 @app.delete("/posts/{id}")  # id = post id
 ```
 
-## HTTP Methods
+## :globe_with_meridians: HTTP Methods
 
 ```http
 https://developer.mozilla.org/es/docs/Web/HTTP/Methods
 ```
 
-## HTTP Status code
+## :compass: HTTP Status code
 
 ```http
 https://developer.mozilla.org/es/docs/Web/HTTP/Status
 ```
 
-## Docs
+## :memo: Docs
 
 ```http
 http://127.0.0.1:8000/docs
@@ -130,31 +130,31 @@ http://127.0.0.1:8000/docs
 http://127.0.0.1:8000/redoc
 ```
 
-## SQLAlchemy
+## :books: SQLAlchemy
 
 ```http
 https://docs.sqlalchemy.org/en/14/
 ```
 
-## FastAPI
+## :zap: FastAPI
 
 ```http
 https://fastapi.tiangolo.com
 ```
 
-## psycopg
+## :satellite: psycopg
 
 ```http
 https://www.psycopg.org
 ```
 
-## JWT
+## :key: JWT
 
 ```http
 https://jwt.io
 ```
 
-## Alembic
+## :alembic: Alembic
 
 ```http
 https://alembic.sqlalchemy.org/en/latest/
@@ -179,7 +179,7 @@ alembic history
 alembic upgrade head
 ```
 
-## PyTest
+## :test_tube: PyTest
 
 Instalación:
 
@@ -204,7 +204,7 @@ pytest --disable-warnings -v -s
 pytest --disable-warnings -v -s -x
 ```
 
-## Heroku
+## :robot: Heroku
 
 Plataforma en la nube gratis sin tarjeta de credito para devs:
 
@@ -236,7 +236,7 @@ heroku run "alembic upgrade head"
 heroku ps -a fastapi-demo
 ```
 
-## Github Actions
+## :package: Github Actions
 
 ```http
 https://github.com/features/actions
@@ -246,7 +246,7 @@ https://github.com/features/actions
 https://docs.github.com/es/actions/using-containerized-services/creating-postgresql-service-containers
 ```
 
-## Docker
+## :whale: Docker
 
 ```http
 https://docs.docker.com/get-started/
