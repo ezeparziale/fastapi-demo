@@ -1,8 +1,11 @@
 from typing import List, Optional
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
-from sqlalchemy.orm import Session
+
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Response, status
 from sqlalchemy import func
+from sqlalchemy.orm import Session
+
 from app import oauth2
+
 from .. import models, schemas, utils
 from ..database import engine, get_db
 
