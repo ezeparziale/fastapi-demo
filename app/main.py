@@ -8,7 +8,13 @@ from .routers import post, user, auth, vote
 
 origins = ["*"]  # "*" para DEV, completar con URL productiva para PROD
 
-app = FastAPI()
+app = FastAPI(
+    title="FastApi-Demo-1",
+    description="""
+    # Fast Api Demo :rocket:
+    """,
+    version="1.0",
+)
 
 app.add_middleware(
     CORSMiddleware,
