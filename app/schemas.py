@@ -4,8 +4,6 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 from pydantic.types import conint
 
-from app.database import Base
-
 
 class UserOut(BaseModel):
     id: int
