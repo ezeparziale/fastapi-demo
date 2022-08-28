@@ -1,15 +1,14 @@
+import pytest
+from app import models
+from app.config import settings
+from app.database import Base, get_db
+from app.main import app
+from app.oauth2 import create_access_token
 from fastapi.testclient import TestClient
 from requests.sessions import Session
-from app.main import app
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from app.config import settings
-from app.database import get_db
-from app.database import Base
-import pytest
-from app.oauth2 import create_access_token
-from app import models
+from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
 
