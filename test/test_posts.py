@@ -9,7 +9,6 @@ def test_get_all_posts(authorized_client, test_posts):
         return schemas.PostOUT(**post)
 
     post_map = map(validate, res.json())
-    posts_list = list(post_map)
     print(res.json())
 
     assert len(res.json()) == len(test_posts)
@@ -73,7 +72,7 @@ def test_create_post_default_published_true(authorized_client, test_user, test_p
     assert res.status_code == 201
     assert created_post.title == "asd"
     assert created_post.content == "qwe"
-    assert created_post.published == True
+    assert created_post.published is True
     assert created_post.owner_id == test_user["id"]
 
 
