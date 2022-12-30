@@ -18,6 +18,9 @@ def get_posts(
     skip: int = 0,
     search: str | None = "",
 ):
+    """
+    ### Get post list
+    """
     posts = (
         db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
         .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
@@ -36,6 +39,9 @@ def create_posts(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
 ):
+    """
+    ### Create post
+    """
     new_post = models.Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
@@ -49,6 +55,9 @@ def get_post(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
 ):
+    """
+    ### Get post by id
+    """
     post = (
         db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
         .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
@@ -70,6 +79,9 @@ def delete_post(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
 ):
+    """
+    ### Delete post
+    """
     post_query = db.query(models.Post).filter(models.Post.id == id)
 
     post = post_query.first()
@@ -98,6 +110,9 @@ def update_post(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
 ):
+    """
+    ### Update post
+    """
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post_to_update = post_query.first()
     if post_to_update is None:
