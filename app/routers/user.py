@@ -18,7 +18,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if user_exist:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"User exists",
+            detail="User exists",
         )
     hashed_password = utils.hash(user.password)
     user.password = hashed_password
