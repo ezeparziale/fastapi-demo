@@ -13,7 +13,7 @@ def vote(
     vote: schemas.Vote,
     db: Session = Depends(database.get_db),
     current_user: int = Depends(oauth2.get_current_user),
-)-> Any:
+) -> Any:
     """
     ### Vote a post
     """

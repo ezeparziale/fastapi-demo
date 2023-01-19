@@ -1,8 +1,7 @@
 import pytest
-from jose import jwt
-
 from app import schemas
 from app.config import settings
+from jose import jwt
 
 
 def test_create_user(client, session):
