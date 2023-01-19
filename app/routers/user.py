@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -9,8 +11,8 @@ from ..database import get_db
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+@router.post("/", status_code=status.HTTP_201_CREATED)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)) -> schemas.UserOut:
     """
     ### Create user
     """
@@ -29,8 +31,8 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.get("/{id}", response_model=schemas.UserOut)
-def get_user(id: int, db: Session = Depends(get_db)):
+@router.get("/{id}")
+def get_user(id: int, db: Session = Depends(get_db)) -> schemas.UserOut:
     """
     ### Get user by id
     """
@@ -43,14 +45,14 @@ def get_user(id: int, db: Session = Depends(get_db)):
     return user
 
 
-@router.get("/", response_model=list[schemas.UserOut])
+@router.get("/")
 def get_users(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
     limit: int = 10,
     skip: int = 0,
     search: str | None = "",
-):
+) -> list[schemas.UserOut]:
     """
     ### Get all users info
     """
