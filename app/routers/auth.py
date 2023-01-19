@@ -8,11 +8,11 @@ from ..database import get_db
 router = APIRouter(prefix="/login", tags=["Authentication"])
 
 
-@router.post("/", response_model=schemas.Token)
+@router.post("/")
 def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
-):
+) -> schemas.Token:
     """
     ### Login user
     """
