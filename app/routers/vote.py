@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -11,7 +13,7 @@ def vote(
     vote: schemas.Vote,
     db: Session = Depends(database.get_db),
     current_user: int = Depends(oauth2.get_current_user),
-):
+)-> Any:
     """
     ### Vote a post
     """
