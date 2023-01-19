@@ -1,5 +1,5 @@
 fastapi==0.89.1
-alembic==1.9.1
+alembic==1.9.2
 SQLAlchemy==1.4.45
 passlib[bcrypt]==1.7.4
 requests==2.28.1
