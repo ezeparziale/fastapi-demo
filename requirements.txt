@@ -8,5 +8,5 @@ python-jose==3.3.0
 pydantic[dotenv, email]==1.10.7
 psycopg2==2.9.6
 python-multipart==0.0.6
-uvicorn==0.20.0
+uvicorn==0.21.1
 httpx==0.23.3
