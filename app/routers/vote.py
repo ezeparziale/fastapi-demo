@@ -1,41 +1,48 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from .. import database, models, oauth2, schemas
+from app.database import get_db
+from app.deps import CurrentUser
+from app.models import Post, Vote
+from app.schemas import Vote as VoteSchema
 
-router = APIRouter(prefix="/vote", tags=["Vote"])
+router = APIRouter(prefix="/votes", tags=["Vote"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def vote(
-    vote: schemas.Vote,
-    db: Session = Depends(database.get_db),
-    current_user: int = Depends(oauth2.get_current_user),
+    vote: VoteSchema,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = None,  # type: ignore
 ) -> Any:
     """
     ### Vote a post
     """
-    post = db.query(models.Post).filter(models.Post.id == vote.post_id).first()
+    stmt_select = select(Post).where(Post.id == vote.post_id)
+    post = db.execute(stmt_select).scalars().first()
+
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id: {vote.post_id} does not exist",
         )
 
-    vote_query = db.query(models.Vote).filter(
-        models.Vote.post_id == vote.post_id, models.Vote.user_id == current_user.id
+    stmt_select_vote = select(Vote).where(
+        Vote.post_id == vote.post_id, Vote.user_id == current_user.id
     )
 
-    found_vote = vote_query.first()
+    found_vote = db.execute(stmt_select_vote).scalars().first()
+
     if vote.dir == 1:
         if found_vote:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"user {current_user.id} has already voted on post {vote.post_id}",
+                detail=f"user {current_user.id} has already voted on post {vote.post_id}",  # noqa: E501
             )
-        new_vote = models.Vote(post_id=vote.post_id, user_id=current_user.id)
+        new_vote = Vote(post_id=vote.post_id, user_id=current_user.id)
         db.add(new_vote)
         db.commit()
         return {"message": "successfully added vote"}
@@ -44,6 +51,12 @@ def vote(
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Vote does not exist"
             )
-        vote_query.delete(synchronize_session=False)
+
+        stmt_delete_vote = (
+            delete(Vote)
+            .where(Vote.post_id == vote.post_id, Vote.user_id == current_user.id)
+            .execution_options(synchronize_session=False)
+        )
+        db.execute(stmt_delete_vote)
         db.commit()
         return {"message": "successfully deleted vote"}

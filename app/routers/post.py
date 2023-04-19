@@ -1,92 +1,93 @@
-from typing import Any
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
-from sqlalchemy import func
+from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.orm import Session
 
-from app import oauth2
-
-from .. import models, schemas
-from ..database import get_db
+from app.database import get_db
+from app.deps import CommonsDep, CurrentUser
+from app.models import Post, Vote
+from app.schemas import Post as PostSchema
+from app.schemas import PostCreate, PostOut
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.get("/")
+@router.get("/", status_code=status.HTTP_200_OK)
 def get_posts(
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user),
-    limit: int = 10,
-    skip: int = 0,
-    search: str | None = "",
-) -> list[schemas.PostOUT]:
+    current_user: CurrentUser = None,  # type: ignore
+    commons: CommonsDep = None,  # type: ignore
+) -> list[PostOut]:
     """
     ### Get post list
     """
-    posts = (
-        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
-        .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
-        .group_by(models.Post.id)
-        .filter(models.Post.title.contains(search))
-        .limit(limit)
-        .offset(skip)
-        .all()
+    stmt_select = (
+        select(Post, func.count(Vote.post_id).label("votes"))
+        .join(Vote, Vote.post_id == Post.id, isouter=True)
+        .group_by(Post.id)
+        .where(Post.title.contains(commons.search))
+        .limit(commons.limit)
+        .offset(commons.offset)
     )
-    return posts
+    posts = db.execute(stmt_select).all()
+    return posts  # type: ignore[return-value]
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_posts(
-    post: schemas.PostCreate,
+    post: PostCreate,
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user),
-) -> schemas.Post:
+    current_user: CurrentUser = None,  # type: ignore
+) -> PostSchema:
     """
     ### Create post
     """
-    new_post = models.Post(owner_id=current_user.id, **post.dict())
+    new_post = Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
     return new_post
 
 
-@router.get("/{id}")
+@router.get("/{id}", status_code=status.HTTP_200_OK)
 def get_post(
-    id: int,
+    id: Annotated[int, Path(title="The ID of the post to get")],
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user),
-) -> schemas.PostOUT:
+    current_user: CurrentUser = None,  # type: ignore
+) -> PostOut:
     """
     ### Get post by id
     """
-    post = (
-        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
-        .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
-        .group_by(models.Post.id)
-        .filter(models.Post.id == id)
-        .first()
+    stmt_select = (
+        select(Post, func.count(Vote.post_id).label("votes"))
+        .join(Vote, Vote.post_id == Post.id, isouter=True)
+        .group_by(Post.id)
+        .where(Post.id == id)
+        .limit(1)
     )
+    post = db.execute(stmt_select).first()
 
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id {id} not found"
         )
-    return post
+    return post  # type: ignore[return-value]
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(
-    id: int,
+    id: Annotated[int, Path(title="The ID of the post to delete")],
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user),
+    current_user: CurrentUser = None,  # type: ignore
 ) -> None:
     """
     ### Delete post
     """
-    post_query = db.query(models.Post).filter(models.Post.id == id)
+    stmt_select = select(Post).where(Post.id == id).limit(1)
+    post_query = db.execute(stmt_select)
 
-    post = post_query.first()
+    post = post_query.scalars().first()
 
     if post is None:
         raise HTTPException(
@@ -100,23 +101,27 @@ def delete_post(
             detail="Not authorized to perform requested action",
         )
 
-    post_query.delete(synchronize_session=False)
+    stmt_delete = (
+        delete(Post).where(Post.id == id).execution_options(synchronize_session=False)
+    )
+    db.execute(stmt_delete)
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)  # type: ignore[return-value] # noqa: E501
 
 
-@router.put("/{id}")
+@router.put("/{id}", status_code=status.HTTP_200_OK)
 def update_post(
-    id: int,
-    post: schemas.PostCreate,
+    id: Annotated[int, Path(title="The ID of the post to update")],
+    post: PostCreate,
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user),
-) -> schemas.Post:
+    current_user: CurrentUser = None,  # type: ignore
+) -> PostSchema:
     """
     ### Update post
     """
-    post_query = db.query(models.Post).filter(models.Post.id == id)
-    post_to_update = post_query.first()
+    stmt_select = select(Post).where(Post.id == id).limit(1)
+    post_to_update = db.execute(stmt_select).scalars().first()
+
     if post_to_update is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -129,6 +134,13 @@ def update_post(
             detail="Not authorized to perform requested action",
         )
 
-    post_query.update(post.dict(), synchronize_session=False)
+    stmt_update = (
+        update(Post)
+        .where(Post.id == id)
+        .values(post.dict())  # type: ignore[arg-type]
+        .execution_options(synchronize_session=False)
+        .returning(Post)
+    )
+    result = db.scalars(stmt_update)
     db.commit()
-    return post_query.first()
+    return result.first()  # type: ignore[return-value]
