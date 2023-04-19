@@ -16,7 +16,7 @@ uvicorn app.main:app --reload
 #### Creación de un post
 
 ```python
-@app.post("/posts")
+@app.post("/api/v1/posts")
 ```
 
 Body:
@@ -32,7 +32,7 @@ Body:
 #### Creación de un usuario
 
 ```python
-@app.post("/users")
+@app.post("/api/v1/users")
 ```
 
 Body:
@@ -47,7 +47,7 @@ Body:
 #### Login de usuario
 
 ```python
-@app.post("/login")
+@app.post("/api/v1/login")
 ```
 
 Parametros:
@@ -60,7 +60,7 @@ password: "my_password"
 #### Votación de post
 
 ```python
-@app.post("/vote")
+@app.post("/api/v1/vote")
 ```
 
 Body:
@@ -77,19 +77,19 @@ Body:
 #### Lectura de un post
 
 ```python
-@app.get("/posts/{id}")  # id = post id
+@app.get("/api/v1/posts/{id}")  # id = post id
 ```
 
 #### Lectura de todos los post
 
 ```python
-@app.get("/posts")
+@app.get("/api/v1/posts")
 ```
 
 #### Lectura de un usuario
 
 ```python
-@app.get("/users/{id}")  # id = user id
+@app.get("/api/v1/users/{id}")  # id = user id
 ```
 
 ### :coffee: Update
@@ -97,7 +97,7 @@ Body:
 #### Actualización de un post
 
 ```python
-@app.put("/posts/{id}")  # id = post id
+@app.put("/api/v1/posts/{id}")  # id = post id
 ```
 
 ### :fire: Delete
@@ -105,7 +105,7 @@ Body:
 #### Borrado de un post
 
 ```python
-@app.delete("/posts/{id}")  # id = post id
+@app.delete("/api/v1/posts/{id}")  # id = post id
 ```
 
 ## :globe_with_meridians: HTTP Methods
