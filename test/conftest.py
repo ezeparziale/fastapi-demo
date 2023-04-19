@@ -1,21 +1,17 @@
 import pytest
-from app import models
-from app.config import settings
-from app.database import Base, get_db
-from app.main import app
-from app.oauth2 import create_access_token
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
+from app.config import settings
+from app.database import Base, get_db
+from app.main import app
+from app.models import Post
+from app.oauth import create_access_token
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-client = TestClient(app)
 
 
 @pytest.fixture()
@@ -45,7 +41,7 @@ def client(session):
 @pytest.fixture
 def test_user(client):
     user_data = {"email": "abc1@test.com", "password": "abc123"}
-    res = client.post("/users/", json=user_data)
+    res = client.post("/api/v1/users/", json=user_data)
     assert res.status_code == 201
     print(res.json())
     new_user = res.json()
@@ -56,7 +52,7 @@ def test_user(client):
 @pytest.fixture
 def test_user2(client):
     user_data = {"email": "abc2@test.com", "password": "abc123"}
-    res = client.post("/users/", json=user_data)
+    res = client.post("/api/v1/users/", json=user_data)
     assert res.status_code == 201
     print(res.json())
     new_user = res.json()
@@ -66,7 +62,7 @@ def test_user2(client):
 
 @pytest.fixture
 def token(test_user):
-    return create_access_token({"user_id": test_user["id"]})
+    return create_access_token({"id": test_user["id"]})
 
 
 @pytest.fixture
@@ -84,11 +80,11 @@ def test_posts(test_user, test_user2, session):
     ]
 
     def create_user_model(post):
-        return models.Post(**post)
+        return Post(**post)
 
     post_map = map(create_user_model, posts_data)
     posts = list(post_map)
     session.add_all(posts)
     session.commit()
-    post = session.query(models.Post).all()
+    post = session.query(Post).all()
     return post
