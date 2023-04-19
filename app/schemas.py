@@ -13,7 +13,7 @@ class UserOut(BaseModel):
         orm_mode = True
 
 
-class UserLogin(BaseModel):
+class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
@@ -38,7 +38,7 @@ class Post(PostBase):
         orm_mode = True
 
 
-class PostOUT(BaseModel):
+class PostOut(BaseModel):
     Post: Post
     votes: int
 
@@ -46,9 +46,9 @@ class PostOUT(BaseModel):
         orm_mode = True
 
 
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
+class Vote(BaseModel):
+    post_id: int
+    dir: conint(le=1)  # type: ignore
 
 
 class Token(BaseModel):
@@ -58,8 +58,3 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: str | None = None
-
-
-class Vote(BaseModel):
-    post_id: int
-    dir: conint(le=1)
