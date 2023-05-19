@@ -2,3 +2,4 @@ env/
 _
 __pycache__
 mnt/
+**/.vscode
